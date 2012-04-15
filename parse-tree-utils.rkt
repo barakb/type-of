@@ -19,7 +19,7 @@
 
 (define pt-ref
   (lambda(pt n)
-    (vector-ref pt ( + 1 n))))
+    (vector-ref pt (+ 1 n))))
 
 (define make-pt-pred
   (lambda(tag)

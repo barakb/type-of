@@ -1,9 +1,16 @@
 #lang racket
-(require "util.rkt")
 (require "language.rkt")
 
 (provide (except-out (all-defined-out)
                      fv))
+
+(define flatmap
+  (lambda(f seq)
+    (if (null? seq)
+        '()
+        (append (f (car seq))
+                (flatmap f (cdr seq))))))
+
 (define free-vars
   (lambda(pt bindings)
     (cond ((number-pt? pt) '())
@@ -49,7 +56,7 @@
 
 (define fv
   (lambda(exp)
-     (free-occurrence-check exp (lambda(pt) pt) (lambda(msg) msg))))
+    (free-occurrence-check exp (lambda(pt) pt) (lambda(msg) msg))))
 
 ;;(fv '(lambda(a b) a b +))
 ;;(fv '(let ((foo (lambda(bar) foo + 1 bar))) foo goo))

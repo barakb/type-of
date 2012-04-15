@@ -79,6 +79,7 @@
                 (append (tuple-type->humen-form  arg-type) '(->) (list (type->human-form (procedure-type->result-type type))))
                 (list (type->human-form  arg-type) '-> (type->human-form (procedure-type->result-type type)))))))))
 
+
 (define tuple-type->humen-form
   (lambda(tuple)
     (letrec ((addbetween (lambda(lst seperator)
@@ -89,6 +90,45 @@
       (addbetween (tuple-type->types tuple) '*))))
 
 
+(define normalize-type
+  (lambda(type)
+    (normalize type '() (lambda(type env) type))))
+
+(define normalize-types
+  (lambda(types env cont)
+    (cond((null? types) (cont types env))
+         (else (normalize (car types) env (lambda(normalized-first env)
+                                            (normalize-types (cdr types) env
+                                                             (lambda(normalized-rest env)
+                                                               (cont (cons normalized-first normalized-rest) env))))))))) 
+
+(define normalize
+  (lambda(type env cont)
+    (cond ((number-type? type) (cont type env))
+          ((boolean-type? type) (cont type env))
+          ((void-type? type) (cont type env))
+          ((tuple-type? type) (normalize-types (tuple-type->types type) env 
+                                               (lambda(types env)
+                                                 (cont (tuple-type types) env))))
+          ((var-type? type) (let ((found (assoc type env)))
+                              (if found 
+                                  (cont (cdr found) env)
+                                  (let ((var (tag 'var-type (length env))))
+                                    (cont var (cons (cons type var) env))))))
+          ((procedure-type? type) 
+           (normalize (procedure-type->arg-type type) 
+                      env
+                      (lambda(arg-type env)
+                        (normalize (procedure-type->result-type type)
+                                   env
+                                   (lambda(result-type env)
+                                     (cont (procedure-type arg-type result-type) env)))))))))
+
+
 ;; Sample usages          
 ;; (type->human-form (procedure-type (tuple-type (list (number-type) (var-type))) (var-type)))
 ;; (type->human-form (procedure-type (void-type) (var-type)))
+
+
+;;(require racket/trace)
+;;(trace normalize-type)

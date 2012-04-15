@@ -1,5 +1,4 @@
 #lang racket
-(require "util.rkt")
 (require "language.rkt")
 (require "type.rkt")
 

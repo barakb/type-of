@@ -1,11 +1,11 @@
 #lang racket
-(require "util.rkt")
+
 (require "language.rkt")
 (require "type.rkt")
 (require "type-equations.rkt")
 
 
-(require racket/trace)
+;; (require racket/trace)
 
 (provide (except-out (all-defined-out)
                      ))
@@ -19,14 +19,10 @@
           (procedure-type (apply-one-subst (procedure-type->arg-type ty0) tvar ty1)
                           (apply-one-subst (procedure-type->result-type ty0) tvar ty1)))
          ((tuple-type? ty0) 
-          ;           (fprintf (current-output-port)
-          ;                    "tuple-type ty0: ~a \ntypes are: ~a\n"
-          ;                    ty0
-          ;(tuple-type->types ty0))
           (tuple-type (map (lambda(ty0)
                              (apply-one-subst ty0 tvar ty1))
                            (tuple-type->types ty0))))
-         ((var-type?  ty0) (if (equal? ty0 tvar)
+         ((var-type? ty0) (if (equal? ty0 tvar)
                                ty1
                                ty0))
          )))
@@ -199,7 +195,7 @@
 ;; (u '(lambda(f) (zero? (f f))))
 ;; (u '((lambda(x) (x x)) (lambda(x) (x x))))
 ;;(u '(lambda(x) (x x)))
-(u '+)
-(u '(lambda(x) +))
-(u '(lambda(+) +))
-(u '(lambda(+) (- + 1)))
+;;(u '+)
+;;(u '(lambda(x) +))
+;;(u '(lambda(+) +))
+;;(u '(lambda(+) (- + 1)))
