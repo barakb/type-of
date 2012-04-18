@@ -1,0 +1,17 @@
+#lang racket
+(require "language.rkt")
+(require (rename-in "rename.rkt" (rename rename:rename)))
+(require "utils.rkt")
+
+(define rename
+  (lambda(exp)
+    (parse exp
+           (lambda(pt)
+             (rename:rename pt))
+           (lambda()
+             #f))))
+
+(rename '((lambda(x)(lambda(y)( + x y))) (+ x y)))
+;;(rename '(lambda(x)(lambda(y)(x y))))
+
+;;(rename '(lambda(x) x))

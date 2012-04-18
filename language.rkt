@@ -130,17 +130,6 @@
 
 (define app-pt->rands-pt pt-take-second)
 
-;; Language Grammer.
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Program -> Expression
-;; Expression -> 'number'
-;; Expression -> '(' Expression+ ')'
-;; Expression -> '(' 'if' Expression Expression Expression')'
-;; Expression -> 'variable'
-;; Expression -> '(' 'lambda' '(' 'variable'* ')' Expression+ ')'
-;; Expression -> '(' 'let' '(' '(' 'variable' Expression ')' ')' Expression+ ')'
-;; Expression -> '(' 'letrec' '(' '(' 'variable' Expression ')' ')' Expression+ ')'
-
 (define parse
   (lambda(exp success fail)
     (cond ((number? exp) (success (number-pt exp)))
