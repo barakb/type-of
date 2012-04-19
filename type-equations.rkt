@@ -4,12 +4,12 @@
 
 (require racket/trace)
 
-(provide (except-out (all-defined-out)
-                     ))
+(provide (except-out (all-defined-out)))
+
+
 
 (define type-equations
   (lambda(pt bindings equations c)
-    ;;(display `(bindings ,bindings pt ,pt)) (newline)
     (cond ((number-pt? pt) 
            (let ((tv (var-type)))
              (c tv (cons (cons tv (number-type)) equations))))

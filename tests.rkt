@@ -19,6 +19,7 @@
                                        (format-type-equations type-var type-equations)
                                        (unify:unify type-equations '() (lambda(subs)
                                                                    (type->human-form 
+                                                                    ;;(cdr (assoc type-var subs))))
                                                                     (normalize-type (cdr (assoc type-var subs)))))
                                               (lambda()
                                                 'subs-fail))))
