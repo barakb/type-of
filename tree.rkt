@@ -1,4 +1,5 @@
 #lang racket
+(provide (all-defined-out))
 
 ;; ADT type [unit -> Tree]
 ;; Impl type [T1 * List -> [[T1 * List -> T2] -> T2]]
@@ -8,46 +9,47 @@
       (selector data children))))
 
 
-;; Signature get-data(tree)
+;; Signature tree->data(tree)
 ;; ADT type  [Tree -> T1]
-(((T0 * T1 -> T0) -> T2) -> T2)
 ;; Impl type [[[T1 * List -> T2] -> T2]] -> T2]
-(define get-data 
+(define tree->data
   (lambda(tree)
     (tree (lambda(data children) data))))
 
-;; Signature get-children(node)
+;; Signature tree->children(node)
 ;; ADT type  [Tree -> T1]
 ;; Impl type [[[T1 * List -> T2] -> T2]] -> T2]
-(define get-children
+(define tree->children
   (lambda(tree)
     (tree (lambda(data children) children))))
 
 
-(define tree-find-if
+(define tree-find-if$
   (lambda(tree pred? success fail)
-    (if (pred? (get-data tree))
-        (success (get-data tree))
-        (trees-find-if (get-children tree) pred? success fail))))
+    (if (pred? (tree->data tree))
+        (success (tree->data tree))
+        (trees-find-if$ (tree->children tree) pred? success fail))))
 
-(define trees-find-if       
+(define trees-find-if$       
   (lambda(trees pred? success fail)
     (if(null? trees)
        (fail)
-       (tree-find-if (car trees)
-                     pred?
-                     success
-                     (lambda()
-                       (trees-find-if (cdr trees)
-                                      pred?
-                                      success
-                                      fail))))))
+       (tree-find-if$ (car trees)
+                      pred?
+                      success
+                      (lambda()
+                        (trees-find-if$ (cdr trees)
+                                        pred?
+                                        success
+                                        fail))))))
 
 (define tree-map
   (lambda(f tree)
-    (make-tree (f (tree-data tree))
+    (make-tree (f (tree->data tree))
                (map (lambda(tree)
                       (tree-map f tree))
-                    (tree-children)))))
+                    (tree->children tree)))))
+
+
 
 
