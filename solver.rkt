@@ -71,7 +71,7 @@
          ((var-type? ty) (not (equal? tvar ty)))
          )))
 
-(define unify-once 
+(define solve-once 
   (lambda(ty1 ty2 subst success fail)
     (let ((ty1 (apply-subst-to-type ty1 subst))
           (ty2 (apply-subst-to-type ty2 subst)))
@@ -85,39 +85,39 @@
                 (success (extends-subst subst ty2 ty1))
                 (fail)))
             ((and (tuple-type? ty1) (tuple-type? ty2))
-             (unify-list (tuple-type->types ty1) (tuple-type->types ty2) subst success fail))
+             (solve-list (tuple-type->types ty1) (tuple-type->types ty2) subst success fail))
             ((and (procedure-type? ty1) (procedure-type? ty2))
-             (unify-once (procedure-type->arg-type ty1) (procedure-type->arg-type ty2) 
+             (solve-once (procedure-type->arg-type ty1) (procedure-type->arg-type ty2) 
                          subst
                          (lambda(subst)
-                           (unify-once (procedure-type->result-type ty1) (procedure-type->result-type ty2)
+                           (solve-once (procedure-type->result-type ty1) (procedure-type->result-type ty2)
                                        subst
                                        success
                                        fail))
                          fail))
             (else (fail))))))
 
-(define unify-list
+(define solve-list
   (lambda(tys1 tys2 subst success fail)           
     (cond ((and (null? tys1) (null? tys2)) (success subst))
           ((and (not (null? tys1)) (not (null? tys2)))
-           (unify-once (car tys1) (car tys2) subst 
+           (solve-once (car tys1) (car tys2) subst 
                        (lambda(subst)
-                         (unify-list (cdr tys1) (cdr tys2)
+                         (solve-list (cdr tys1) (cdr tys2)
                                      subst 
                                      success
                                      fail))
                        fail))
           (else (fail)))))
 
-(define unify 
+(define solve 
   (lambda(equations subst success fail)
     (cond ((null? equations) (success subst))
-          (else (unify-once (car (car equations))
+          (else (solve-once (car (car equations))
                             (cdr (car equations))
                             subst
                             (lambda(subst)
-                              (unify (cdr equations) subst success fail))
+                              (solve (cdr equations) subst success fail))
                             fail)))))
 
 (define init-data
@@ -162,7 +162,7 @@
                  (type-equations pt init-env init-equations
                                  (lambda(type-var type-equations) 
                                    (format-type-equations type-var type-equations)
-                                   (unify type-equations '() (lambda(subs)
+                                   (solve type-equations '() (lambda(subs)
                                                                (type->human-form (cdr (assoc type-var subs))))
                                           (lambda()
                                             'subs-fail)))))
