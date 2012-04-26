@@ -1,5 +1,6 @@
 #lang racket
 (require "language.rkt")
+(require "unparse.rkt")
 (require "ex3-helpers.rkt")
 (provide rename)
 
@@ -42,5 +43,8 @@
                              (letrec-pt->bodies pt)))))
           )))          
 
-
-
+;(parse '(lambda(x) (y (lambda(y) (+ x y))))
+;       (lambda(pt)
+;         (unparse (rename pt)))
+;       (lambda()
+;         'parse-failed))

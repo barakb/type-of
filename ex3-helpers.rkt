@@ -2,6 +2,13 @@
 
 (provide (all-defined-out))
 
+(define flatmap
+  (lambda(f seq)
+    (if (null? seq)
+        '()
+        (append (f (car seq))
+                (flatmap f (cdr seq))))))
+
 (define fresh-name
   (let((counter 0))
     (lambda name
