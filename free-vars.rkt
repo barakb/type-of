@@ -2,7 +2,7 @@
 (require "language.rkt")
 (require "ex3-helpers.rkt")
 
-(provide free-vars)
+(provide free-vars free-vars2)
 
 
 (define free-vars

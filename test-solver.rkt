@@ -5,7 +5,7 @@
 (require (rename-in "solver.rkt" 
                     (solve solve:solve))
          )
-(require "free-vars.rkt")
+(require "free-vars-full.rkt")
 (require "utils.rkt")
 
 
@@ -13,7 +13,7 @@
 (define solve
   (lambda(exp)
     (parse exp (lambda(pt)
-                 (if (null? (free-vars pt (map car init-data)))
+                 (if (null? (free-vars2 pt (map car init-data)))
                      (type-equations pt init-env init-equations
                                      (lambda(type-var type-equations) 
                                        (format-type-equations type-var type-equations)
@@ -84,4 +84,6 @@
        => 
        '(NUMBER -> NUMBER))
  
+ 
  )
+

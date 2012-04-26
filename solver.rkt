@@ -2,10 +2,10 @@
 
 (require "language.rkt")
 (require "type.rkt")
+(require "no-occurrence-full.rkt")
 (require "type-equations.rkt")
 
 
-;; (require racket/trace)
 
 (provide (except-out (all-defined-out)
                      ))
@@ -57,19 +57,6 @@
                (apply-one-subst oldrhs tvar ty))))
           subst))))
 
-(define no-occurrence?
-  (lambda(tvar ty)
-    (cond((number-type? ty) #t)
-         ((boolean-type? ty) #t)
-         ((void-type? ty) #t)
-         ((procedure-type? ty)
-          (and (no-occurrence? tvar (procedure-type->arg-type ty))
-               (no-occurrence? tvar (procedure-type->result-type ty))))
-         ((tuple-type? ty) (andmap (lambda(ty)
-                                     (no-occurrence? tvar ty))
-                                   (tuple-type->types ty)))
-         ((var-type? ty) (not (equal? tvar ty)))
-         )))
 
 (define solve-once 
   (lambda(ty1 ty2 subst success fail)
@@ -156,46 +143,5 @@
     type-equations))
 
 
-(define u
-  (lambda(exp)
-    (parse exp (lambda(pt)
-                 (type-equations pt init-env init-equations
-                                 (lambda(type-var type-equations) 
-                                   (format-type-equations type-var type-equations)
-                                   (solve type-equations '() (lambda(subs)
-                                                               (type->human-form (cdr (assoc type-var subs))))
-                                          (lambda()
-                                            'subs-fail)))))
-           
-           (lambda() 'parse-fail))))
 
-;;(trace apply-one-subst)
 
-;(u '(lambda(f g)
-;      (lambda(n)
-;        (f (g n)))))
-
-;;(u '(letrec ((fact (lambda(n)
-;;               (if (zero? n)
-;;                   1
-;;                   (* n (fact (- n 1)))))))
-;;      fact))
-
-;; (u '(lambda(x) (+ x (x 1))))
-;;(u '(lambda(f)
-;;      (lambda(x)
-;;        (- (f 3) (f x)))))
-
-;;(u '(lambda(f)(f 11)))
-
-;; x can not be both boolean and number.
-;;(u '(lambda(x)
-;;      (if x 1 (+ x 2))))
-
-;; (u '(lambda(f) (zero? (f f))))
-;; (u '((lambda(x) (x x)) (lambda(x) (x x))))
-;;(u '(lambda(x) (x x)))
-;;(u '+)
-;;(u '(lambda(x) +))
-;;(u '(lambda(+) +))
-;;(u '(lambda(+) (- + 1)))
