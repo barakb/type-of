@@ -5,7 +5,7 @@
 (require (rename-in "solver.rkt" 
                     (solve solve:solve))
          )
-(require "free-vars-full.rkt")
+(require "free-vars.rkt")
 (require "utils.rkt")
 
 
