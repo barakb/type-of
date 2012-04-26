@@ -1,4 +1,5 @@
 #lang racket
+(require "ex3-helpers.rkt")
 (require "language.rkt")
 (require (rename-in "rename.rkt" (rename rename:rename)))
 (require "utils.rkt")
@@ -68,8 +69,6 @@
              'parse-failed))))
 
 
-;;(require racket/trace)
-;;(trace rename3?)
 
 (run-tests
  (test  (check-rename3?  '+))

@@ -121,22 +121,27 @@
                                                 (c (cons tv tv-seq) bindings))))))))
 
 
-(define foo
+(define display-type-equations-of-exp
   (lambda(exp)
     (parse exp (lambda(pt)
                  (type-equations pt '() '() (lambda(type-var type-equations) 
                                               (fprintf (current-output-port)
-                                                       "start type-variable: ~a \ntype-equations: ~a\n"
-                                                       type-var
-                                                       type-equations)
+                                                       "~a:\n  start type-variable: ~a\n  type-equations: ~a\n"
+                                                       exp
+                                                       (type->human-form  type-var)
+                                                       (map (lambda(equation)
+                                                              (list (type->human-form (car equation))
+                                                                    '=
+                                                                    (type->human-form (cdr equation))))
+                                                            type-equations))
                                               #t)))
            (lambda() 'parse-fail))))
 
 
 ;;(trace type-equations)
-;;(foo '(lambda(x y z) 1))
-;;(foo '(lambda(x y) x y))
-;;(foo '((lambda(x) x) 1))
-;;(foo '(letrec ((foo (lambda(f) 
-;;                      (foo f))))
-;;        (foo 1)))
+( display-type-equations-of-exp '(lambda(x y z) 1))
+( display-type-equations-of-exp '(lambda(x y) x y))
+( display-type-equations-of-exp '((lambda(x) x) 1))
+( display-type-equations-of-exp '(letrec ((foo (lambda(f) 
+                                                 (foo f))))
+                                   (foo 1)))
