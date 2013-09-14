@@ -1,10 +1,10 @@
 #lang racket
 (require "language.rkt")
 (require "type.rkt")
-(require "type-equations-full.rkt")
-(require "free-vars-full.rkt")
-;(require "type-equations.rkt")
-;(require "free-vars.rkt")
+;(require "type-equations-full.rkt")
+;(require "free-vars-full.rkt")
+(require "type-equations.rkt")
+(require "free-vars.rkt")
 (require (rename-in "solver.rkt" 
                     (solve solve:solve))
          )
@@ -28,13 +28,6 @@
 
 
 
-
-(solve '(letrec ((foo (lambda(f n)
-                       (if (zero? n)
-                           (lambda(x) x)
-                           (lambda(x) ((foo f (- n 1)) (f x)))))))
-         foo))
-(display 'foo) (newline)
 (run-tests
  
  (test  (solve '(lambda(f1 g1)

@@ -72,14 +72,17 @@
 
 (run-tests
  (test  (check-rename3?  '+))
- (test  (check-rename3?  '(lambda(x) x)))
- (test  (check-rename3?  '((lambda(x)(lambda(y)( + x y))) (+ x y))))
- (test  (check-rename3?  '(let((x (+ x 3)))
+ (test  (check-rename3?  '(lambda(x) 1 x)))
+ (test  (check-rename3?  '((lambda(r)(lambda(y)( + r y))) (+ x y))))
+ (test  (check-rename3?  '(let((r (+ r 3)))
                             (x y) (x z))))
- (test  (check-rename3?  '(letrec ((foo (lambda(x)(foo + x 3))))
+ (test  (check-rename3?  '(letrec ((foo (lambda(x y)(foo + x 3 y))))
                    (foo y) (x z))))
- (test  (check-rename3?  '(if (lambda(x)(+ x 1)) (lambda(y)(+ y 1)) (lambda(z)(+ z 1)))))
- (test  (check-rename3?  '((lambda(x)(lambda(y)( + x y))) (+ x y))))
+ (test  (check-rename3?  '(if (lambda(x y z)(+ x 1)) (lambda(y x z)(+ y z x 1)) (lambda(z t)(+ t z 1)))))
+ (test  (check-rename3?  '((lambda(z)(lambda(y)( + z y))) (+ z y))))
  (test  (check-rename3?  '(lambda(x)(lambda(y)(x y)))))
+ (test  (check-rename3?  '(lambda(x y)(letrec ((foo (lambda(y)(foo z x y))))
+                                        foo))))
+ (test  (check-rename3?  '(if test 3 (lambda(z)(lambda(y)(z y))))))
  
  )

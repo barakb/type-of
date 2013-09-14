@@ -48,3 +48,12 @@
 ;         (unparse (rename pt)))
 ;       (lambda()
 ;         'parse-failed))
+
+
+(parse '(letrec ((foo (lambda(x) (foo + x 3))))
+          (foo y)
+          (x z))
+       (lambda(pt)
+         (unparse (rename pt)))
+       (lambda()
+         'parse-failed))

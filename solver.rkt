@@ -2,8 +2,8 @@
 
 (require "language.rkt")
 (require "type.rkt")
-(require "no-occurrence.rkt")
-(require "type-equations.rkt")
+(require "no-occurrence-full.rkt")
+(require "type-equations-full.rkt")
 
 
 

@@ -1,5 +1,6 @@
 #lang racket
 (require "utils.rkt")
+;;(require "tree-full.rkt")
 (require "tree.rkt")
 
 (define sexp->tree
@@ -12,15 +13,11 @@
     (cons (tree->data tree) (map tree->sexp (tree->children tree)))))
 
 (run-tests
- (let((sexp '(1 (5 (6) (7)))))
-   (test (tree->sexp (sexp->tree sexp))
-       => sexp)
-   )
  (test (tree-find-if$ (sexp->tree '(1 (4 (0) (f)) (f))) zero? (lambda(x) x) (lambda() #f))
        => 0)
  (test (tree-find-if$ (sexp->tree '(1 (4 (0) (f)) (f))) (lambda(x) #f) (lambda(x) x) (lambda() #f))
        => #f)
- (test (tree->sexp (tree-map (lambda(n) (+ n 1)) (sexp->tree '(1 (4 (0))))))
+ (test (tree->sexp (tree-map (lambda(n) (* n 2)) (sexp->tree '(1 (4 (0) (10))))))
        => 
-       '(2 (5 (1))))
+       '(2 (8 (0) (20))))
  )
